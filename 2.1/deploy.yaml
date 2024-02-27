@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: busytool
+  labels:
+    app: busytool
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: busytool
+  template:
+    metadata:
+      labels:
+        app: busytool
+    spec:
+      containers:
+      - name: busybox
+        image: busybox
+        command: [ 'sh', '-c', 'while true; do echo busy >> /var/test.txt;sleep 5; done; ']
+        volumeMounts:
+          - name: empty-volume
+            mountPath: /var
+      - name: multitool
+        image: wbitt/network-multitool
+        volumeMounts:
+          - name: empty-volume
+            mountPath: /multitool
+      volumes:
+        - name: empty-volume
+          emptyDir: { }
